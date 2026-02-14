@@ -102,15 +102,22 @@ npm run dev
 - **/** — login with Google.
 - **/bookmarks** — add, view, delete bookmarks (protected; redirects to `/` if not logged in).
 
-### 7. Deploy on Vercel
+### 7. Deploy on Vercel (fix “redirect to localhost” after Google login)
 
 1. Push to GitHub and import the repo in Vercel.
-2. In Vercel project **Settings → Environment Variables**, add:
+2. In Vercel **Settings → Environment Variables**, add:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-3. In Google Cloud Console, add your Vercel URL to **Authorized JavaScript origins** and add `https://your-app.vercel.app/auth/callback` (and any preview URLs if needed) to **Authorized redirect URIs** as required for OAuth. Supabase callback URL stays as above; the app’s callback is `https://your-app.vercel.app/auth/callback`.
+   - **`NEXT_PUBLIC_APP_URL`** = your live URL, e.g. `https://bookmarks-ashy-tau.vercel.app` (no trailing slash).  
+     This is required so the app tells Supabase to redirect back to Vercel after Google sign-in, not localhost.
+3. **Supabase: Authentication → URL Configuration**
+   - **Site URL**: set to your Vercel URL, e.g. `https://bookmarks-ashy-tau.vercel.app`.  
+     If this stays as `http://localhost:3000`, Supabase will redirect to localhost after login.
+   - **Redirect URLs**: add `https://bookmarks-ashy-tau.vercel.app/auth/callback` (and your exact Vercel URL).  
+     Supabase only allows redirects to URLs listed here.
+4. In Google Cloud Console, add your Vercel URL to **Authorized JavaScript origins** and ensure the Supabase callback `https://<your-project-ref>.supabase.co/auth/v1/callback` is in **Authorized redirect URIs**.
 
-Build and deploy. Use the live URL to sign in with Google and test.
+Redeploy on Vercel after changing env vars. Then sign in with Google on the live URL; you should land back on the app, not localhost.
 
 ## Realtime explanation
 

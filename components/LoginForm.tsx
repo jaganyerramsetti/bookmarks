@@ -9,10 +9,18 @@ export default function LoginForm() {
   const signInWithGoogle = () => {
     startTransition(async () => {
       const supabase = createClient();
+      // Use NEXT_PUBLIC_APP_URL in production (Vercel) so redirect goes to deployed URL, not localhost
+      const baseUrl =
+        typeof window !== "undefined" && process.env.NEXT_PUBLIC_APP_URL
+          ? process.env.NEXT_PUBLIC_APP_URL
+          : typeof window !== "undefined"
+            ? window.location.origin
+            : "";
+      const redirectTo = `${baseUrl.replace(/\/$/, "")}/auth/callback`;
       await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo,
         },
       });
     });
