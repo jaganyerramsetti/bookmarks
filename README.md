@@ -53,7 +53,7 @@ A production-ready bookmark manager with **Google OAuth**, **private per-user bo
 
 ```bash
 git clone <your-repo-url>
-cd smart-bookmark-app
+cd bookmarks
 npm install
 ```
 
